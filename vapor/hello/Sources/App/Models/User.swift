@@ -11,10 +11,6 @@ import FluentMongoDriver
 import Foundation
 
 final class User: Model, AsyncResponseEncodable, Content {
-    func encodeResponse(for request: Request) async throws -> Response {
-        let res = Response(status: .ok)
-        return res
-    }
     
     // Name of the table or collection.
     static let schema = "users"

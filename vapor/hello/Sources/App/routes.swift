@@ -17,7 +17,7 @@ struct Greeting: Content {
 func routes(_ app: Application) throws {
     
     app.get { req in
-        return "vapor server!"
+        return "vapor server running!"
     }
 
     app.get("hello") { req -> String in

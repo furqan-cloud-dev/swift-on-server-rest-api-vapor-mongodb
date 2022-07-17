@@ -5,6 +5,14 @@
 //  Created by Furqan on 16/07/2022.
 //  Email: furqan.cloud.dev@gmail.com
 
+
+/***** Some Best Practices
+
+ - Create separate functions for controllers for processing request
+ - Use custom sturct/classes conform to Content for return value to avoid any typo mistake when using dictionaries as return object like:  ["vlueKey": "somevalue"] etc.
+ 
+*/
+
 import Vapor
 import FluentKit
 import FluentMongoDriver
@@ -22,36 +30,57 @@ extension CreateUser: Validatable {
 }
 
 
+enum UserResponseError: Error {
+    case invalidId
+    case notFound
+}
+
+
 final class UserController {
     
-    static func configureRoutes(app: Application) {
+    private static func create(req: Request) async throws -> [String: String] {
+        try CreateUser.validate(content: req)
+        let user = try req.content.decode(User.self)
+        try await user.create(on: req.db)
+        return ["id": user.id?.hexString ?? ""]
+    }
+    
+    
+    private static func getAll(req: Request) async throws -> [User] {
+        try await User.query(on: req.db).all()
+    }
+    
+    
+    private static func getUser(req: Request) async throws -> User {
+        let id = req.parameters.get("id")!
+        if let dbObjectId = ObjectId(id) {
+            let user = try await User.query(on: req.db)
+                .filter(\.$id == dbObjectId)
+                .first()
+            
+            if let userFound = user {
+                let responseUser = User(id: userFound.id, name: userFound.name, email: userFound.email)
+                return responseUser
+            }
+            else {
+                throw UserResponseError.notFound
+            }
+        }
+        throw UserResponseError.invalidId
+    }
+    
+    
+    
+    
+    public static func configureRoutes(app: Application) {
         let users = app.grouped("users")
-        
         // POST /users
-        users.post { req async throws -> [String: String] in
-            try CreateUser.validate(content: req)
-            let user = try req.content.decode(User.self)
-            try await user.create(on: req.db)
-            return ["id": user.id?.hexString ?? ""]
-        }
+        users.post(use: create)
         
-        // Get Users
-        users.get { req async throws in
-            try await User.query(on: req.db).all()
-        }
-        
+        // Get All Users
+        users.get(use: getAll)
         
         // GET /users/:id
-        users.get(":id") { req -> [String: String] in
-            let id = req.parameters.get("id")!
-            if let dbObjectId = ObjectId(id) {
-                let user = try await User.query(on: req.db)
-                    .filter(\.$id == dbObjectId)
-                    .first()
-                
-                return ["name": user?.name ?? "", "email": user?.email ?? ""]
-            }
-            return [:]
-        }
+        users.get(":id", use: getUser)
     }
 }
