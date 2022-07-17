@@ -11,14 +11,16 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", from: "4.62.1"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.4.0"),
         .package(url: "https://github.com/vapor/fluent-mongo-driver.git", from: "1.1.2"),
+        .package(url: "https://github.com/vapor/jwt.git", from: "4.2.1")
     ],
     targets: [
         .target(
             name: "App",
             dependencies: [
+                .product(name: "Vapor", package: "vapor"),
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentMongoDriver", package: "fluent-mongo-driver"),
-                .product(name: "Vapor", package: "vapor")
+                .product(name: "JWT", package: "jwt")
             ],
             swiftSettings: [
                 // Enable better optimizations when building in Release configuration. Despite the use of

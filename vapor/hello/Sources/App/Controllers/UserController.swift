@@ -52,6 +52,9 @@ final class UserController {
     
     
     private static func getUser(req: Request) async throws -> User {
+        // JWT Token Authorization Middleware Enabled for this route
+        try req.jwt.verify(as: TestPayload.self)
+        
         let id = req.parameters.get("id")!
         if let dbObjectId = ObjectId(id) {
             let user = try await User.query(on: req.db)
@@ -70,10 +73,9 @@ final class UserController {
     }
     
     
-    
-    
     public static func configureRoutes(app: Application) {
         let users = app.grouped("users")
+        
         // POST /users
         users.post(use: create)
         
@@ -82,5 +84,6 @@ final class UserController {
         
         // GET /users/:id
         users.get(":id", use: getUser)
+        
     }
 }

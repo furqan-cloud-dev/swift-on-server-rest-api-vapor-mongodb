@@ -8,6 +8,7 @@
 
 
 import Vapor
+import JWT
 
 struct Greeting: Content {
     var name: String
@@ -33,7 +34,15 @@ func routes(_ app: Application) throws {
         return ["welcome": greeting.name]
     }
     
-    // Configure UserController for "users" routes
+    // Fetch and verify JWT from incoming request.
+    app.get("me") { req -> HTTPStatus in
+        let payload = try req.jwt.verify(as: TestPayload.self)
+        print(payload)
+        return .ok
+    }
+    
+    // Configure Controllers routes
+    LoginController.configureRoutes(app: app)
     UserController.configureRoutes(app: app)
     
 }

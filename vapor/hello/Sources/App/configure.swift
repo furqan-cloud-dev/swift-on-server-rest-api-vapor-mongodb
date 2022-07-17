@@ -17,6 +17,9 @@ public func configure(_ app: Application) throws {
     
     try app.databases.use(.mongo(connectionString: "mongodb://localhost:27017/vapor"), as: .mongo)
 
+    // Json Web Token Configuration
+    app.jwt.signers.use(.hs256(key: "h7k92lmn90cdf"))
+    
 
     // register routes
     try routes(app)
