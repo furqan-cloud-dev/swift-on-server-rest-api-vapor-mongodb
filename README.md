@@ -5,9 +5,9 @@ Swift is a general-purpose programming language built using a modern approach to
 This Project domonstrate the latest Swift on Server to create RESTFul API's connected via Database: MongoDB NoSql 
 <br/>
 
-Swift 5.6 - support async, await asynchronous pattern <br/>
+Swift 5.5 - support async/await structured concurrency pattern <br/>
 ( https://developer.apple.com/videos/play/wwdc2021/10132 )
-<br/>
+<br/><br/>
 Requirements: mac OS Monterey (v 12), Xcode 13.0 
 <br/>
 Clone the repo <br/>
@@ -33,3 +33,11 @@ Get A User:      [ GET ] http://localhost:8080/users/id <br/><br/>
 Deployments options available via Docker, Systemd, Supervisor for Linux / Unix based OS <br/>
 Vapor Framework <br/>
 https://vapor.codes/
+<br/><br/>
+If you are interested to know more about the Future of SwiftOnServer, please check my rencet post:
+<br/>
+https://www.linkedin.com/posts/muhammad-furqan-121b691a_swiftonserver-swift-server-activity-6954367874148749312-JBrD?utm_source=linkedin_share&utm_medium=member_desktop_web
+<br/><br/><br/>
+
+Furqan<br/>
+(Software Developer / Solution Architect)
