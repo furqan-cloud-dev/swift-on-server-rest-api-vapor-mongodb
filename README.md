@@ -5,7 +5,8 @@ Swift is a general-purpose programming language built using a modern approach to
 This Project domonstrate the latest Swift on Server to create RESTFul API's connected via Database: MongoDB NoSql 
 <br/>
 
-Swift 5.6 - support async, await asynchronous pattern
+Swift 5.6 - support async, await asynchronous pattern <br/>
+( https://developer.apple.com/videos/play/wwdc2021/10132 )
 <br/>
 Requirements: mac OS Monterey (v 12), Xcode 13.0 
 <br/>
@@ -19,8 +20,14 @@ Run the project -> http Server will be available at:   Server starting on http:/
 From Postman following APIs are accessible:<br/>
 
 Create User :    [ POST ] http://localhost:8080/users <br/>
-Get All Users :    [ GET ] http://localhost:8080/users <br/>
-Get A User: [ GET ] http://localhost:8080/users/id <br/><br/>
+Get All Users :  [ GET ] http://localhost:8080/users <br/><br/>
+
+JWT Authentication Middleware: <br/>
+Login :          [ POST ] http://localhost:8080/login <br/>
+Response: { "token": "eyJhbG..." } <br/><br/>
+
+Header: [ 'Authorization': Bearer eyJhbGciO... ] <br/>
+Get A User:      [ GET ] http://localhost:8080/users/id <br/><br/>
 
 
 Deployments options available via Docker, Systemd, Supervisor for Linux / Unix based OS <br/>
