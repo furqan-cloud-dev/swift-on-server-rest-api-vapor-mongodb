@@ -30,14 +30,18 @@ final class User: Model, AsyncResponseEncodable, Content {
 
     @Field(key: "email")
     var email: String
+    
+    @Field(key: "password")
+    var password: String
 
     init() { }
 
     // Creates a new User with all properties set.
-    init(id: ObjectId? = nil, name: String, email: String) {
+    init(id: ObjectId? = nil, name: String, email: String, password: String) {
         self.id = id
 //        self.userId = userId
         self.name = name
         self.email = email
+        self.password = password
     }
 }

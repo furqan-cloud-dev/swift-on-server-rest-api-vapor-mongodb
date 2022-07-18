@@ -21,14 +21,22 @@ import FluentMongoDriver
 struct CreateUser: Content {
     var name: String
     var email: String
+    var password: String
+}
+
+struct UserResponse: Content {
+    let id: String?
+    let name: String
+    let email: String
 }
 
 extension CreateUser: Validatable {
     static func validations(_ validations: inout Validations) {
+        validations.add("name", as: String.self)
         validations.add("email", as: String.self, is: .email)
+        validations.add("password", as: String.self)
     }
 }
-
 
 enum UserResponseError: Error {
     case invalidId
@@ -37,6 +45,17 @@ enum UserResponseError: Error {
 
 
 final class UserController {
+    
+    public static func configureRoutes(app: Application) {
+        let users = app.grouped("users")
+        // POST /users
+        users.post(use: create)
+        // Get All Users
+        users.get(use: getAll)
+        // GET /users/:id
+        users.get(":id", use: getUser)
+        
+    }
     
     private static func create(req: Request) async throws -> [String: String] {
         try CreateUser.validate(content: req)
@@ -51,7 +70,7 @@ final class UserController {
     }
     
     
-    private static func getUser(req: Request) async throws -> User {
+    private static func getUser(req: Request) async throws -> UserResponse {
         // JWT Token Authorization Middleware Enabled for this route
         try req.jwt.verify(as: TestPayload.self)
         
@@ -59,11 +78,12 @@ final class UserController {
         if let dbObjectId = ObjectId(id) {
             let user = try await User.query(on: req.db)
                 .filter(\.$id == dbObjectId)
+                .field(\.$id).field(\.$name).field(\.$email)
                 .first()
             
             if let userFound = user {
-                let responseUser = User(id: userFound.id, name: userFound.name, email: userFound.email)
-                return responseUser
+                let userResponse = UserResponse(id: userFound.id?.hexString, name: userFound.name, email: userFound.email)
+                return userResponse
             }
             else {
                 throw UserResponseError.notFound
@@ -73,17 +93,5 @@ final class UserController {
     }
     
     
-    public static func configureRoutes(app: Application) {
-        let users = app.grouped("users")
-        
-        // POST /users
-        users.post(use: create)
-        
-        // Get All Users
-        users.get(use: getAll)
-        
-        // GET /users/:id
-        users.get(":id", use: getUser)
-        
-    }
+   
 }
